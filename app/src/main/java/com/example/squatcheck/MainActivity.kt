@@ -1,75 +1,50 @@
 package com.example.squatcheck
 
-import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.squatcheck.databinding.ActivityMainBinding
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-
 
 class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+
+    private lateinit var binding: ActivityMainBinding
+
+    private val homeFragment = HomeFragment()
+    private val camFragment = CamFragment()
+    private val profileFragment = ProfileFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
 
-        setContentView(view)
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        setUpSquatProgress()
 
-    }
+        // 초기 프래그먼트 설정
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, homeFragment)
+            .commit()
 
-    private fun setUpSquatProgress() {
-        val pieChart = binding.SquatProgress
+        // 바텀 네비게이션 리스너 설정
+        binding.bottomMenu.setOnItemSelectedListener { item ->
+            val selectedFragment: Fragment = when (item.itemId) {
+                R.id.page_1 -> homeFragment
+                R.id.page_2 -> camFragment
+                R.id.page_3 -> profileFragment
+                else -> homeFragment
+            }
 
-        // Pie Chart 기본 설정
-        pieChart.setUsePercentValues(true)
-        pieChart.description.isEnabled = false
-        pieChart.setExtraOffsets(5f, 10f, 5f, 5f)
-        pieChart.setTouchEnabled(false)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, selectedFragment)
+                .commit()
 
-        pieChart.holeRadius = 80f
-        pieChart.transparentCircleRadius = 45f
-
-        pieChart.maxAngle = 270f  // 최대 각도를 270도로 제한
-        pieChart.rotationAngle = 135f  // 시작 각도를 조정해서 위로 향하게
-
-        // 중앙 텍스트 설정
-        pieChart.setDrawCenterText(true)
-        pieChart.setCenterTextSize(16f)
-
-
-        // 애니메이션
-        pieChart.animateY(700)
-
-        // === 더미 데이터 추가 ===
-        val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(70f))
-        entries.add(PieEntry(30f))
-
-        val dataSet = PieDataSet(entries, "")
-        dataSet.setColors(Color.rgb(30,247,128), Color.rgb(200, 200, 200)) // 초록 & 회색
-
-        val data = PieData(dataSet)
-        data.setDrawValues(false)
-        pieChart.data = data
-        pieChart.invalidate()  // 갱신
-
-
-        pieChart.getLegend().setEnabled(false);
-
+            true
+        }
     }
 }
