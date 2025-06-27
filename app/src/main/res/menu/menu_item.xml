@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/page_1"
-        android:title="홈"
+        android:title="HOME"
         android:icon="@drawable/menuicon_home" />
     <item
         android:id="@+id/page_2"
-        android:title="스쿼트캠"
+        android:title="SQUAT"
         android:icon="@drawable/menuicon_cam"/>
     <item
         android:id="@+id/page_3"
-        android:title="프로필"
+        android:title="PROFILE"
         android:icon="@drawable/menuicon_profile"/>
 </menu>
